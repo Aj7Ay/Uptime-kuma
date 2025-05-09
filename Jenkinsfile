@@ -10,7 +10,7 @@ pipeline{
     stages {
         stage ("Git Pull"){
             steps{
-                git branch: 'main', url: 'https://github.com/Aj7Ay/Uptime-kuma.git'
+                git branch: 'main', url: 'https://github.com/YahyaElkhayat/Uptime-kuma.git'
             }
         }
         stage('Install Dependencies') {
@@ -21,8 +21,8 @@ pipeline{
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('sonar-server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Chatbot \
-                    -Dsonar.projectKey=Chatbot '''
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Yahya-CICD \
+                    -Dsonar.projectKey=Yahya-CICD '''
                 }
             }
         }
@@ -49,15 +49,15 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
                        sh "docker build -t uptime ."
-                       sh "docker tag uptime sevenajay/uptime:latest "
-                       sh "docker push sevenajay/uptime:latest "
+                       sh "docker tag uptime yahyaelkhayat/uptime:latest "
+                       sh "docker push yahyaelkhayat/uptime:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image sevenajay/uptime:latest > trivy.json" 
+                sh "trivy image yahyaelkhayat/uptime:latest > trivy.json" 
             }
         }
         stage ("Remove container") {
@@ -68,7 +68,7 @@ pipeline{
         }
         stage('Deploy to container'){
             steps{
-                sh 'docker run -d --name uptime -v /var/run/docker.sock:/var/run/docker.sock -p 3001:3001 sevenajay/uptime:latest'
+                sh 'docker run -d --name uptime -v /var/run/docker.sock:/var/run/docker.sock -p 3001:3001 yahyaelkhayat/uptime:latest'
             }
         }
     }
